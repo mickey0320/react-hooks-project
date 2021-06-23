@@ -7,7 +7,7 @@ interface RequestConfig extends RequestInit{
   data?: object
   token?: string
 }
-export const http = async(endpoint: string, {data, token,...config}: RequestConfig) => {
+export const http = async(endpoint: string, {data, token,...config}: RequestConfig = {}) => {
   let url = `${apiUrl}${endpoint}`
   let body
   const requestConfig: RequestConfig = {

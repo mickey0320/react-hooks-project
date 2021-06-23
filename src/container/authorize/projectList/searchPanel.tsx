@@ -40,7 +40,7 @@ const SearchPanel: React.FC<SearchPanelProps> = ({param, setParam, users}) => {
         <option value="">负责人</option>
         {users.map(user => {
           return (
-            <option key={user.id}>{user.name}</option>
+            <option key={user.id} value={user.id}>{user.name}</option>
           )
         })}
       </select>
