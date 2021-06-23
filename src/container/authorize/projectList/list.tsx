@@ -4,7 +4,7 @@ import { User } from './searchPanel'
 export interface Project{
   id: number
   name: string
-  personId: number
+  personId: string
 }
 
 interface ListProps{

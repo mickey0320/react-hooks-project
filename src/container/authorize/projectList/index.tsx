@@ -1,31 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import { useDebounce } from '../../../hooks'
-import { cleanObject } from '../../../utils'
-import { useHttp } from '../../../utils/http'
-import List, { Project } from './list'
-import SearchPanel, { User } from './searchPanel'
+import { useProjects, useUsers } from './hooks'
+import List from './list'
+import SearchPanel from './searchPanel'
 
 const ProjectList = () => {
   const [searchParam, setSearchParam] = useState({
     name: '',
     personId: ''
   })
-  const [projects, setProjects] = useState<Project[]>([])
-  const [users, setUsers] = useState<User[]>([])
   const debounceParam = useDebounce(searchParam, 500)
-  const request = useHttp()
-
-  useEffect(()=>{
-    request('/projects', {data: cleanObject(debounceParam)}).then(setProjects)
-  }, [debounceParam])
-
-  useEffect(()=>{
-    request('/users').then(setUsers)
-  }, [])
+  const { isLoading, data: projects}  = useProjects(debounceParam)
+  const { data: users}  = useUsers()
   return (
     <div className="project-list">
-      <SearchPanel param={searchParam} setParam={setSearchParam} users={users}></SearchPanel>
-      <List projects={projects} users={users}></List>
+      {isLoading ? <div>loading</div>:null}
+      <SearchPanel param={searchParam} setParam={setSearchParam} users={users || []}></SearchPanel>
+      <List projects={projects || []} users={users || []}></List>
     </div>
   )
 }
