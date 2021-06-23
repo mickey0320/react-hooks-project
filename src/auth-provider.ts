@@ -12,14 +12,16 @@ export const getToken = () => {
 
 export const login = async({username, password}: LoginInfo) => {
   const data = await http('/login', {
+    method: "POST",
     data: {username, password}
   })
-  localStorage.setItem('token', data.token)
+  localStorage.setItem('token', data.user.token)
   return data
 }
 
 export const register = async({username, password}: LoginInfo) => {
   return await http('/register', {
+    method: "POST",
     data: {username, password}
   })
 }

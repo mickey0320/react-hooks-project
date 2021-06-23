@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDebounce } from '../hooks'
+import { useDebounce } from '../../../hooks'
 import List, { Project } from './list'
 import SearchPanel, { User } from './searchPanel'
 

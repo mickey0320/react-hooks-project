@@ -1,4 +1,5 @@
 import qs from 'qs'
+import { useAuth } from '../context/authContext'
 
 const apiUrl = process.env.REACT_APP_API_URL
 
@@ -6,21 +7,21 @@ interface RequestConfig extends RequestInit{
   data?: object
   token?: string
 }
-export const http = async(endpoint: string, config: RequestConfig) => {
-  let url = ''
+export const http = async(endpoint: string, {data, token,...config}: RequestConfig) => {
+  let url = `${apiUrl}${endpoint}`
   let body
   const requestConfig: RequestConfig = {
     method: 'GET',
     headers:{
-      'Authrization': config.token ? `Bearer ${config.token}` : '',
-      'Content-Type': config.data ? 'application/json': ''
+      'Authorization': token ? `Bearer ${token}` : '',
+      'Content-Type': data ? 'application/json': ''
     },
     ...config
   }
   if(requestConfig.method === 'GET'){
-    url += `${apiUrl}${endpoint}?${qs.stringify(config.data)}` 
+    url += `?${qs.stringify(data)}` 
   } else {
-    body = JSON.stringify(config.data || {})
+    body = JSON.stringify(data || {})
   }
   return window.fetch(url, {...requestConfig, body}).then(async res => {
     // 没有权限
@@ -35,8 +36,10 @@ export const http = async(endpoint: string, config: RequestConfig) => {
   })
 }
 
+// 携带着token进行http请求
 export const useHttp = () => {
+  const { user } = useAuth()
   return (...[endpoint, config]: Parameters<typeof http>) => {
-    return http(endpoint, config)
+    return http(endpoint, { token: user?.token, ...config})
   }
 }

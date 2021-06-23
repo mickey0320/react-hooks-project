@@ -1,10 +1,13 @@
-import React from 'react';
-import ProjectList from './projectList';
+import React, { useEffect } from 'react';
+import { useAuth } from './context/authContext';
+import AuthorizeApp from './container/authorize'
+import UnAuthorizeApp from './container/unauthorize'
 
 function App() {
+  const {user} = useAuth()
   return (
     <div className="App">
-      <ProjectList></ProjectList>
+      {user ? <AuthorizeApp /> : <UnAuthorizeApp />}
     </div>
   );
 }

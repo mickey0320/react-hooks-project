@@ -1,6 +1,7 @@
-import React, { useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import * as auth from "../auth-provider"
-import { User } from "../projectList/searchPanel"
+import { User } from "../container/authorize/projectList/searchPanel"
+import { http } from "../utils/http"
 
 interface AuthForm {
   username: string
@@ -14,6 +15,15 @@ interface IAuthContext{
 }
 const AuthContext = React.createContext<IAuthContext>({} as IAuthContext)
 
+const bootstrap = async() => {
+  const token = auth.getToken()
+  if(!token){
+    return null
+  }
+  const data = await http('/me', { token })
+  return data.user
+}
+
 export const AuthProvider: React.FC = ({children}) => {
   const [user, setUser] = useState<User>()
   const login = (data: AuthForm) => auth.login(data).then(setUser)
@@ -25,9 +35,18 @@ export const AuthProvider: React.FC = ({children}) => {
     register,
     logout
   }
+  useEffect(()=>{
+    bootstrap().then(setUser)
+  },[])
   return (
     <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   )
+}
+
+export const useAuth = () => {
+  const context = useContext(AuthContext)
+
+  return context
 }
